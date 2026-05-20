@@ -1,0 +1,5 @@
+command /tp <player>:
+    permission: eagler.tp
+    trigger:
+        teleport player to argument 1
+        send "&aTeleported to %argument 1%!" to player
