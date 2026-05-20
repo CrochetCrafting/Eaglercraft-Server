@@ -1,0 +1,10 @@
+{
+    "name": "MinePRIVATELY",
+    "portsAttributes": {
+        "25565": {
+            "label": "Minecraft Web Traffic",
+            "onAutoForward": "notify",
+            "visibility": "public"
+        }
+    }
+}
