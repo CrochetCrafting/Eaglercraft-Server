@@ -300,3 +300,6 @@
 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
 	at java.base/java.lang.Thread.run(Thread.java:1474)
 
+[05-21 01:19:52]: [FINE] The user A_Person_sShadow has 4 accounts:
+[05-21 01:19:52]: [FINE] §7§aA_Person_sShadow§7, a_person, melikesheep, rubystar1432.
+[05-21 01:19:52]: [FINE] A_Person_sShadow logged in 0:0:0:0:0:0:0:1%0
