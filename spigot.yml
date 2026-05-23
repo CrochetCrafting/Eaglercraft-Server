@@ -63,18 +63,6 @@ stats:
 world-settings:
   default:
     verbose: true
-    hunger:
-      jump-walk-exhaustion: 0.05
-      jump-sprint-exhaustion: 0.2
-      combat-exhaustion: 0.1
-      regen-exhaustion: 6.0
-      swim-multiplier: 0.01
-      sprint-multiplier: 0.1
-      other-multiplier: 0.0
-    ticks-per:
-      hopper-transfer: 8
-      hopper-check: 1
-    hopper-amount: 1
     mob-spawn-range: 4
     growth:
       cactus-modifier: 100
@@ -99,6 +87,10 @@ world-settings:
       monsters: 48
       misc: 32
       other: 64
+    ticks-per:
+      hopper-transfer: 8
+      hopper-check: 1
+    hopper-amount: 1
     random-light-updates: false
     save-structure-info: true
     dragon-death-sound-radius: 0
@@ -106,6 +98,14 @@ world-settings:
     seed-feature: 14357617
     seed-monument: 10387313
     seed-slime: 987234911
+    hunger:
+      jump-walk-exhaustion: 0.05
+      jump-sprint-exhaustion: 0.2
+      combat-exhaustion: 0.1
+      regen-exhaustion: 6.0
+      swim-multiplier: 0.01
+      sprint-multiplier: 0.1
+      other-multiplier: 0.0
     max-tnt-per-tick: 100
     max-tick-time:
       tile: 50
