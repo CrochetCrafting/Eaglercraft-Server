@@ -788,6 +788,7 @@
       "slime": "2026-05-23 19:42:41 +0000",
       "skeleton": "2026-05-21 13:43:37 +0000",
       "silverfish": "2026-05-22 22:07:30 +0000",
+      "zombie": "2026-05-26 13:41:31 +0000",
       "spider": "2026-05-21 00:07:08 +0000"
     },
     "done": false
@@ -903,6 +904,12 @@
   "minecraft:recipes/building_blocks/light_blue_stained_glass": {
     "criteria": {
       "has_glass": "2026-05-20 21:27:24 +0000"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/brick_block": {
+    "criteria": {
+      "has_brick": "2026-05-26 13:45:05 +0000"
     },
     "done": true
   },
@@ -1077,6 +1084,12 @@
   "minecraft:recipes/building_blocks/coal_block": {
     "criteria": {
       "has_at_least_9_coal": "2026-05-20 00:09:55 +0000"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/clay": {
+    "criteria": {
+      "has_clay_ball": "2026-05-26 13:44:12 +0000"
     },
     "done": true
   },
@@ -1518,6 +1531,12 @@
   "minecraft:recipes/decorations/red_stained_glass_pane": {
     "criteria": {
       "has_glass": "2026-05-20 21:27:24 +0000"
+    },
+    "done": true
+  },
+  "minecraft:recipes/decorations/flower_pot": {
+    "criteria": {
+      "has_brick": "2026-05-26 13:45:05 +0000"
     },
     "done": true
   },
