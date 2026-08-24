@@ -798,3 +798,61 @@
 [08-24 19:20:45]: [FINE] §7§aA_Person_sShadow§7, a_person, melikesheep, rubystar1432, i_love_chicken_u.
 [08-24 19:20:45]: [FINE] A_Person_sShadow logged in 0:0:0:0:0:0:0:1%0
 [08-24 19:58:41]: [INFO] AuthMe 5.6.0-bCUSTOM disabled!
+[08-24 21:23:06]: [INFO] SQLite Setup finished
+[08-24 21:23:06]: [INFO] No supported permissions system found! Permissions are disabled!
+[08-24 21:23:06]: [WARN] WARNING! The protectInventory feature requires ProtocolLib! Disabling it...
+[08-24 21:23:06]: [INFO] AuthMe 5.6.0 build n.CUSTOM successfully enabled!
+[08-24 21:23:08]: [INFO] Downloading GEO IP database, because the old database is older than 30 days or doesn't exist
+[08-24 21:23:08]: [WARN] No MaxMind credentials found in the configuration file! GeoIp protections will be disabled.
+[08-24 21:23:08]: [INFO] There is no newer GEO IP database uploaded to MaxMind. Using the old one for now.
+[08-24 21:23:08]: [WARN] Could not download GeoLiteAPI database [FileNotFoundException]: plugins/AuthMe/GeoLite2-Country.mmdb (No such file or directory)
+[08-24 21:23:08]: java.io.FileNotFoundException: plugins/AuthMe/GeoLite2-Country.mmdb (No such file or directory)
+	at java.base/java.io.RandomAccessFile.open0(Native Method)
+	at java.base/java.io.RandomAccessFile.open(RandomAccessFile.java:338)
+	at java.base/java.io.RandomAccessFile.<init>(RandomAccessFile.java:257)
+	at java.base/java.io.RandomAccessFile.<init>(RandomAccessFile.java:211)
+	at fr.xephi.authme.libs.com.maxmind.db.BufferHolder.<init>(BufferHolder.java:20)
+	at fr.xephi.authme.libs.com.maxmind.db.Reader.<init>(Reader.java:121)
+	at fr.xephi.authme.service.GeoIpService.startReading(GeoIpService.java:179)
+	at fr.xephi.authme.service.GeoIpService.updateDatabase(GeoIpService.java:150)
+	at org.bukkit.craftbukkit.v1_12_R1.scheduler.CraftTask.run(CraftTask.java:64)
+	at org.bukkit.craftbukkit.v1_12_R1.scheduler.CraftAsyncTask.run(CraftAsyncTask.java:52)
+	at com.destroystokyo.paper.ServerSchedulerReportingWrapper.run(ServerSchedulerReportingWrapper.java:22)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+	at java.base/java.lang.Thread.run(Thread.java:1474)
+
+[08-24 21:23:36]: [FINE] The user A_Person_sShadow has 5 accounts:
+[08-24 21:23:36]: [FINE] §7§aA_Person_sShadow§7, a_person, melikesheep, rubystar1432, i_love_chicken_u.
+[08-24 21:23:36]: [FINE] A_Person_sShadow logged in 0:0:0:0:0:0:0:1%0
+[08-24 21:25:57]: [FINE] The user Rubystar1432 has 5 accounts:
+[08-24 21:25:57]: [FINE] §7a_person_sshadow, a_person, melikesheep, §aRubystar1432§7, i_love_chicken_u.
+[08-24 21:25:57]: [FINE] Rubystar1432 logged in 0:0:0:0:0:0:0:1%0
+[08-24 21:26:55]: [FINE] The user MeLikeSheep has 5 accounts:
+[08-24 21:26:55]: [FINE] §7a_person_sshadow, a_person, §aMeLikeSheep§7, rubystar1432, i_love_chicken_u.
+[08-24 21:26:55]: [FINE] MeLikeSheep logged in 0:0:0:0:0:0:0:1%0
+[08-24 21:27:40]: [FINE] Rubystar1432 used the wrong password
+[08-24 21:27:51]: [FINE] The user Rubystar1432 has 5 accounts:
+[08-24 21:27:51]: [FINE] §7a_person_sshadow, a_person, melikesheep, §aRubystar1432§7, i_love_chicken_u.
+[08-24 21:27:51]: [FINE] Rubystar1432 logged in 0:0:0:0:0:0:0:1%0
+[08-24 21:28:08]: [FINE] Rubystar1432 used the wrong password
+[08-24 21:28:32]: [FINE] The user Rubystar1432 has 5 accounts:
+[08-24 21:28:32]: [FINE] §7a_person_sshadow, a_person, melikesheep, §aRubystar1432§7, i_love_chicken_u.
+[08-24 21:28:32]: [FINE] Rubystar1432 logged in 0:0:0:0:0:0:0:1%0
+[08-24 21:30:14]: [FINE] The user A_Person_sShadow has 5 accounts:
+[08-24 21:30:14]: [FINE] §7§aA_Person_sShadow§7, a_person, melikesheep, rubystar1432, i_love_chicken_u.
+[08-24 21:30:14]: [FINE] A_Person_sShadow logged in 0:0:0:0:0:0:0:1%0
+[08-24 21:30:47]: [FINE] The user Rubystar1432 has 5 accounts:
+[08-24 21:30:47]: [FINE] §7§aA_Person_sShadow§7, a_person, §aMeLikeSheep§7, §aRubystar1432§7, i_love_chicken_u.
+[08-24 21:30:47]: [FINE] Rubystar1432 logged in 0:0:0:0:0:0:0:1%0
+[08-24 21:30:55]: [FINE] The user MeLikeSheep has 5 accounts:
+[08-24 21:30:55]: [FINE] §7§aA_Person_sShadow§7, a_person, §aMeLikeSheep§7, §aRubystar1432§7, i_love_chicken_u.
+[08-24 21:30:55]: [FINE] MeLikeSheep logged in 0:0:0:0:0:0:0:1%0
+[08-24 21:34:47]: [FINE] The user A_Person_sShadow has 5 accounts:
+[08-24 21:34:47]: [FINE] §7§aA_Person_sShadow§7, a_person, melikesheep, rubystar1432, i_love_chicken_u.
+[08-24 21:34:47]: [FINE] A_Person_sShadow logged in 0:0:0:0:0:0:0:1%0
+[08-24 21:39:16]: [FINE] Joyfull4Chicken registered 0:0:0:0:0:0:0:1%0
+[08-24 21:39:16]: [FINE] The user Joyfull4Chicken has 6 accounts:
+[08-24 21:39:16]: [FINE] §7§aA_Person_sShadow§7, a_person, melikesheep, rubystar1432, i_love_chicken_u, §aJoyfull4Chicken§7.
+[08-24 21:39:16]: [FINE] Joyfull4Chicken logged in 0:0:0:0:0:0:0:1%0
+[08-24 21:47:02]: [INFO] AuthMe 5.6.0-bCUSTOM disabled!
