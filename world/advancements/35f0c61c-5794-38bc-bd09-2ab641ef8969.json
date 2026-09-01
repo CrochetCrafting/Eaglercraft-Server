@@ -71,6 +71,12 @@
     },
     "done": true
   },
+  "minecraft:recipes/building_blocks/snow": {
+    "criteria": {
+      "has_snowball": "2026-08-26 01:36:16 +0000"
+    },
+    "done": true
+  },
   "minecraft:recipes/decorations/white_bed": {
     "criteria": {
       "has_white_wool": "2026-05-20 17:11:50 +0000"
@@ -451,6 +457,12 @@
     },
     "done": true
   },
+  "minecraft:recipes/redstone/tnt": {
+    "criteria": {
+      "has_gunpowder": "2026-08-26 00:16:04 +0000"
+    },
+    "done": true
+  },
   "minecraft:recipes/decorations/black_stained_glass_pane": {
     "criteria": {
       "has_glass": "2026-05-20 21:27:24 +0000"
@@ -789,7 +801,8 @@
       "skeleton": "2026-05-21 13:43:37 +0000",
       "silverfish": "2026-05-22 22:07:30 +0000",
       "zombie": "2026-05-26 13:41:31 +0000",
-      "spider": "2026-05-21 00:07:08 +0000"
+      "spider": "2026-05-21 00:07:08 +0000",
+      "creeper": "2026-08-26 00:06:37 +0000"
     },
     "done": false
   },
@@ -1108,6 +1121,12 @@
   "minecraft:story/deflect_arrow": {
     "criteria": {
       "deflected_projectile": "2026-05-22 22:40:32 +0000"
+    },
+    "done": true
+  },
+  "minecraft:recipes/decorations/snow_layer": {
+    "criteria": {
+      "has_snowball": "2026-08-26 01:36:16 +0000"
     },
     "done": true
   },
