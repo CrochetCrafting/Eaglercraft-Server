@@ -121,7 +121,6 @@ world-settings:
       push-based: false
     duplicate-uuid-resolver: saferegen
     duplicate-uuid-saferegen-delete-range: 32
-    keep-spawn-loaded: true
     keep-spawn-loaded-range: 6
     auto-save-interval: -1
     nether-ceiling-void-damage: false
@@ -141,6 +140,7 @@ world-settings:
     non-player-arrow-despawn-rate: -1
     prevent-tnt-from-moving-in-water: false
     armor-stands-tick: true
+    keep-spawn-loaded: true
     anti-xray:
       enabled: false
       engine-mode: 1
