@@ -1035,3 +1035,102 @@
 [09-02 00:46:33]: [FINE] §7§aA_Person_sShadow§7, a_person, melikesheep, rubystar1432, i_love_chicken_u, §aJoyfull4Chicken§7.
 [09-02 00:46:33]: [FINE] Joyfull4Chicken logged in 0:0:0:0:0:0:0:1%0
 [09-02 01:37:04]: [INFO] AuthMe 5.6.0-bCUSTOM disabled!
+[09-02 13:48:06]: [INFO] SQLite Setup finished
+[09-02 13:48:06]: [INFO] No supported permissions system found! Permissions are disabled!
+[09-02 13:48:06]: [WARN] WARNING! The protectInventory feature requires ProtocolLib! Disabling it...
+[09-02 13:48:07]: [INFO] AuthMe 5.6.0 build n.CUSTOM successfully enabled!
+[09-02 13:48:08]: [INFO] Downloading GEO IP database, because the old database is older than 30 days or doesn't exist
+[09-02 13:48:08]: [WARN] No MaxMind credentials found in the configuration file! GeoIp protections will be disabled.
+[09-02 13:48:08]: [INFO] There is no newer GEO IP database uploaded to MaxMind. Using the old one for now.
+[09-02 13:48:08]: [WARN] Could not download GeoLiteAPI database [FileNotFoundException]: plugins/AuthMe/GeoLite2-Country.mmdb (No such file or directory)
+[09-02 13:48:08]: java.io.FileNotFoundException: plugins/AuthMe/GeoLite2-Country.mmdb (No such file or directory)
+	at java.base/java.io.RandomAccessFile.open0(Native Method)
+	at java.base/java.io.RandomAccessFile.open(RandomAccessFile.java:338)
+	at java.base/java.io.RandomAccessFile.<init>(RandomAccessFile.java:257)
+	at java.base/java.io.RandomAccessFile.<init>(RandomAccessFile.java:211)
+	at fr.xephi.authme.libs.com.maxmind.db.BufferHolder.<init>(BufferHolder.java:20)
+	at fr.xephi.authme.libs.com.maxmind.db.Reader.<init>(Reader.java:121)
+	at fr.xephi.authme.service.GeoIpService.startReading(GeoIpService.java:179)
+	at fr.xephi.authme.service.GeoIpService.updateDatabase(GeoIpService.java:150)
+	at org.bukkit.craftbukkit.v1_12_R1.scheduler.CraftTask.run(CraftTask.java:64)
+	at org.bukkit.craftbukkit.v1_12_R1.scheduler.CraftAsyncTask.run(CraftAsyncTask.java:52)
+	at com.destroystokyo.paper.ServerSchedulerReportingWrapper.run(ServerSchedulerReportingWrapper.java:22)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+	at java.base/java.lang.Thread.run(Thread.java:1474)
+
+[09-02 13:48:42]: [FINE] The user A_Person_sShadow has 6 accounts:
+[09-02 13:48:42]: [FINE] §7§aA_Person_sShadow§7, a_person, melikesheep, rubystar1432, i_love_chicken_u, joyfull4chicken.
+[09-02 13:48:42]: [FINE] A_Person_sShadow logged in 0:0:0:0:0:0:0:1%0
+[09-02 13:49:14]: [FINE] The user MeLikeSheep has 6 accounts:
+[09-02 13:49:14]: [FINE] §7§aA_Person_sShadow§7, a_person, §aMeLikeSheep§7, rubystar1432, i_love_chicken_u, joyfull4chicken.
+[09-02 13:49:14]: [FINE] MeLikeSheep logged in 0:0:0:0:0:0:0:1%0
+[09-02 13:55:09]: [FINE] The user Rubystar1432 has 6 accounts:
+[09-02 13:55:09]: [FINE] §7§aA_Person_sShadow§7, a_person, §aMeLikeSheep§7, §aRubystar1432§7, i_love_chicken_u, joyfull4chicken.
+[09-02 13:55:09]: [FINE] Rubystar1432 logged in 0:0:0:0:0:0:0:1%0
+[09-02 13:58:29]: [INFO] AuthMe 5.6.0-bCUSTOM disabled!
+[09-08 13:33:58]: [INFO] SQLite Setup finished
+[09-08 13:33:58]: [INFO] No supported permissions system found! Permissions are disabled!
+[09-08 13:33:58]: [WARN] WARNING! The protectInventory feature requires ProtocolLib! Disabling it...
+[09-08 13:33:58]: [INFO] AuthMe 5.6.0 build n.CUSTOM successfully enabled!
+[09-08 13:34:00]: [INFO] Downloading GEO IP database, because the old database is older than 30 days or doesn't exist
+[09-08 13:34:00]: [WARN] No MaxMind credentials found in the configuration file! GeoIp protections will be disabled.
+[09-08 13:34:00]: [INFO] There is no newer GEO IP database uploaded to MaxMind. Using the old one for now.
+[09-08 13:34:00]: [WARN] Could not download GeoLiteAPI database [FileNotFoundException]: plugins/AuthMe/GeoLite2-Country.mmdb (No such file or directory)
+[09-08 13:34:00]: java.io.FileNotFoundException: plugins/AuthMe/GeoLite2-Country.mmdb (No such file or directory)
+	at java.base/java.io.RandomAccessFile.open0(Native Method)
+	at java.base/java.io.RandomAccessFile.open(RandomAccessFile.java:338)
+	at java.base/java.io.RandomAccessFile.<init>(RandomAccessFile.java:257)
+	at java.base/java.io.RandomAccessFile.<init>(RandomAccessFile.java:211)
+	at fr.xephi.authme.libs.com.maxmind.db.BufferHolder.<init>(BufferHolder.java:20)
+	at fr.xephi.authme.libs.com.maxmind.db.Reader.<init>(Reader.java:121)
+	at fr.xephi.authme.service.GeoIpService.startReading(GeoIpService.java:179)
+	at fr.xephi.authme.service.GeoIpService.updateDatabase(GeoIpService.java:150)
+	at org.bukkit.craftbukkit.v1_12_R1.scheduler.CraftTask.run(CraftTask.java:64)
+	at org.bukkit.craftbukkit.v1_12_R1.scheduler.CraftAsyncTask.run(CraftAsyncTask.java:52)
+	at com.destroystokyo.paper.ServerSchedulerReportingWrapper.run(ServerSchedulerReportingWrapper.java:22)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+	at java.base/java.lang.Thread.run(Thread.java:1474)
+
+[09-08 13:34:25]: [FINE] The user A_Person_sShadow has 6 accounts:
+[09-08 13:34:25]: [FINE] §7§aA_Person_sShadow§7, a_person, melikesheep, rubystar1432, i_love_chicken_u, joyfull4chicken.
+[09-08 13:34:25]: [FINE] A_Person_sShadow logged in 0:0:0:0:0:0:0:1%0
+[09-08 13:34:59]: [FINE] The user MeLikeSheep has 6 accounts:
+[09-08 13:34:59]: [FINE] §7§aA_Person_sShadow§7, a_person, §aMeLikeSheep§7, rubystar1432, i_love_chicken_u, joyfull4chicken.
+[09-08 13:34:59]: [FINE] MeLikeSheep logged in 0:0:0:0:0:0:0:1%0
+[09-08 14:00:32]: [INFO] AuthMe 5.6.0-bCUSTOM disabled!
+[09-09 13:32:36]: [INFO] SQLite Setup finished
+[09-09 13:32:36]: [INFO] No supported permissions system found! Permissions are disabled!
+[09-09 13:32:36]: [WARN] WARNING! The protectInventory feature requires ProtocolLib! Disabling it...
+[09-09 13:32:36]: [INFO] AuthMe 5.6.0 build n.CUSTOM successfully enabled!
+[09-09 13:32:38]: [INFO] Downloading GEO IP database, because the old database is older than 30 days or doesn't exist
+[09-09 13:32:38]: [WARN] No MaxMind credentials found in the configuration file! GeoIp protections will be disabled.
+[09-09 13:32:38]: [INFO] There is no newer GEO IP database uploaded to MaxMind. Using the old one for now.
+[09-09 13:32:38]: [WARN] Could not download GeoLiteAPI database [FileNotFoundException]: plugins/AuthMe/GeoLite2-Country.mmdb (No such file or directory)
+[09-09 13:32:38]: java.io.FileNotFoundException: plugins/AuthMe/GeoLite2-Country.mmdb (No such file or directory)
+	at java.base/java.io.RandomAccessFile.open0(Native Method)
+	at java.base/java.io.RandomAccessFile.open(RandomAccessFile.java:338)
+	at java.base/java.io.RandomAccessFile.<init>(RandomAccessFile.java:257)
+	at java.base/java.io.RandomAccessFile.<init>(RandomAccessFile.java:211)
+	at fr.xephi.authme.libs.com.maxmind.db.BufferHolder.<init>(BufferHolder.java:20)
+	at fr.xephi.authme.libs.com.maxmind.db.Reader.<init>(Reader.java:121)
+	at fr.xephi.authme.service.GeoIpService.startReading(GeoIpService.java:179)
+	at fr.xephi.authme.service.GeoIpService.updateDatabase(GeoIpService.java:150)
+	at org.bukkit.craftbukkit.v1_12_R1.scheduler.CraftTask.run(CraftTask.java:64)
+	at org.bukkit.craftbukkit.v1_12_R1.scheduler.CraftAsyncTask.run(CraftAsyncTask.java:52)
+	at com.destroystokyo.paper.ServerSchedulerReportingWrapper.run(ServerSchedulerReportingWrapper.java:22)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+	at java.base/java.lang.Thread.run(Thread.java:1474)
+
+[09-09 13:33:04]: [FINE] The user A_Person_sShadow has 6 accounts:
+[09-09 13:33:04]: [FINE] §7§aA_Person_sShadow§7, a_person, melikesheep, rubystar1432, i_love_chicken_u, joyfull4chicken.
+[09-09 13:33:04]: [FINE] A_Person_sShadow logged in 0:0:0:0:0:0:0:1%0
+[09-09 13:34:15]: [FINE] The user MeLikeSheep has 6 accounts:
+[09-09 13:34:15]: [FINE] §7§aA_Person_sShadow§7, a_person, §aMeLikeSheep§7, rubystar1432, i_love_chicken_u, joyfull4chicken.
+[09-09 13:34:15]: [FINE] MeLikeSheep logged in 0:0:0:0:0:0:0:1%0
+[09-09 13:37:53]: [FINE] The user Rubystar1432 has 6 accounts:
+[09-09 13:37:53]: [FINE] §7§aA_Person_sShadow§7, a_person, §aMeLikeSheep§7, §aRubystar1432§7, i_love_chicken_u, joyfull4chicken.
+[09-09 13:37:53]: [FINE] Rubystar1432 logged in 0:0:0:0:0:0:0:1%0
+[09-09 13:58:16]: [INFO] AuthMe 5.6.0-bCUSTOM disabled!
