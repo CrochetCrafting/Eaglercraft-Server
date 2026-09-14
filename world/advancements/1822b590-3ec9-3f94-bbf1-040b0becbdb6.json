@@ -35,6 +35,12 @@
     },
     "done": true
   },
+  "minecraft:recipes/misc/light_blue_dye_from_blue_orchid": {
+    "criteria": {
+      "has_red_flower": "2026-09-14 13:35:51 +0000"
+    },
+    "done": true
+  },
   "minecraft:recipes/redstone/observer": {
     "criteria": {
       "has_quartz": "2026-09-08 13:39:16 +0000"
@@ -236,7 +242,8 @@
   "minecraft:husbandry/balanced_diet": {
     "criteria": {
       "cooked_beef": "2026-05-21 13:47:47 +0000",
-      "rotten_flesh": "2026-09-08 13:49:38 +0000"
+      "rotten_flesh": "2026-09-08 13:49:38 +0000",
+      "mushroom_stew": "2026-09-14 13:58:44 +0000"
     },
     "done": false
   },
@@ -814,6 +821,12 @@
     },
     "done": true
   },
+  "minecraft:recipes/building_blocks/stone_slab": {
+    "criteria": {
+      "has_stone": "2026-09-14 13:44:28 +0000"
+    },
+    "done": true
+  },
   "minecraft:recipes/building_blocks/coal_block": {
     "criteria": {
       "has_at_least_9_coal": "2026-05-20 14:03:35 +0000"
@@ -940,6 +953,12 @@
     },
     "done": true
   },
+  "minecraft:recipes/redstone/stone_button": {
+    "criteria": {
+      "has_stone": "2026-09-14 13:44:28 +0000"
+    },
+    "done": true
+  },
   "minecraft:recipes/combat/iron_chestplate": {
     "criteria": {
       "has_iron_ingot": "2026-05-20 14:03:35 +0000"
@@ -1055,6 +1074,12 @@
     },
     "done": true
   },
+  "minecraft:recipes/misc/magenta_dye_from_allium": {
+    "criteria": {
+      "has_red_flower": "2026-09-14 13:45:17 +0000"
+    },
+    "done": true
+  },
   "minecraft:recipes/tools/stone_pickaxe": {
     "criteria": {
       "has_cobblestone": "2026-05-20 14:03:48 +0000"
@@ -1064,6 +1089,12 @@
   "minecraft:husbandry/plant_seed": {
     "criteria": {
       "wheat": "2026-05-21 13:32:05 +0000"
+    },
+    "done": true
+  },
+  "minecraft:recipes/redstone/stone_pressure_plate": {
+    "criteria": {
+      "has_stone": "2026-09-14 13:44:28 +0000"
     },
     "done": true
   },
@@ -1154,6 +1185,12 @@
   "minecraft:husbandry/breed_an_animal": {
     "criteria": {
       "bred_sheep": "2026-09-09 13:57:14 +0000"
+    },
+    "done": true
+  },
+  "minecraft:recipes/building_blocks/stonebrick": {
+    "criteria": {
+      "has_stone": "2026-09-14 13:44:28 +0000"
     },
     "done": true
   },
