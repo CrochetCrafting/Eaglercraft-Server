@@ -113,6 +113,12 @@
     },
     "done": true
   },
+  "minecraft:recipes/redstone/redstone": {
+    "criteria": {
+      "has_the_recipe": "2026-09-16 13:59:58 +0000"
+    },
+    "done": true
+  },
   "minecraft:recipes/food/bread": {
     "criteria": {
       "has_wheat": "2026-05-21 13:32:03 +0000"
@@ -241,6 +247,7 @@
   },
   "minecraft:husbandry/balanced_diet": {
     "criteria": {
+      "cooked_porkchop": "2026-09-16 13:36:30 +0000",
       "cooked_beef": "2026-05-21 13:47:47 +0000",
       "rotten_flesh": "2026-09-08 13:49:38 +0000",
       "mushroom_stew": "2026-09-14 13:58:44 +0000"
@@ -514,6 +521,12 @@
     },
     "done": true
   },
+  "minecraft:recipes/redstone/redstone_torch": {
+    "criteria": {
+      "has_redstone": "2026-09-16 13:59:58 +0000"
+    },
+    "done": true
+  },
   "minecraft:recipes/transportation/birch_boat": {
     "criteria": {
       "entered_water": "2026-05-20 13:50:32 +0000"
@@ -523,6 +536,12 @@
   "minecraft:recipes/building_blocks/green_concrete_powder": {
     "criteria": {
       "has_sand": "2026-05-21 13:53:25 +0000"
+    },
+    "done": true
+  },
+  "minecraft:recipes/misc/light_gray_dye_from_ink_bonemeal": {
+    "criteria": {
+      "has_black_dye": "2026-09-16 13:34:56 +0000"
     },
     "done": true
   },
@@ -592,6 +611,12 @@
     },
     "done": true
   },
+  "minecraft:recipes/tools/clock": {
+    "criteria": {
+      "has_redstone": "2026-09-16 13:59:58 +0000"
+    },
+    "done": true
+  },
   "minecraft:recipes/decorations/spruce_fence": {
     "criteria": {
       "has_planks": "2026-05-20 13:50:55 +0000"
@@ -613,7 +638,9 @@
   "minecraft:adventure/kill_all_mobs": {
     "criteria": {
       "slime": "2026-05-26 13:53:29 +0000",
-      "zombie": "2026-05-21 13:57:17 +0000"
+      "skeleton": "2026-09-17 13:43:36 +0000",
+      "zombie": "2026-05-21 13:57:17 +0000",
+      "spider": "2026-09-17 13:51:48 +0000"
     },
     "done": false
   },
@@ -632,6 +659,12 @@
   "minecraft:recipes/decorations/green_bed_from_white_bed": {
     "criteria": {
       "has_bed": "2026-09-08 13:45:09 +0000"
+    },
+    "done": true
+  },
+  "minecraft:recipes/redstone/redstone_block": {
+    "criteria": {
+      "has_at_least_9_redstone": "2026-09-16 13:59:58 +0000"
     },
     "done": true
   },
@@ -887,6 +920,12 @@
     },
     "done": true
   },
+  "minecraft:recipes/building_blocks/bookshelf": {
+    "criteria": {
+      "has_the_recipe": "2026-09-17 13:41:57 +0000"
+    },
+    "done": true
+  },
   "minecraft:recipes/tools/iron_axe": {
     "criteria": {
       "has_iron_ingot": "2026-05-20 14:03:35 +0000"
@@ -920,6 +959,12 @@
   "minecraft:recipes/combat/iron_boots": {
     "criteria": {
       "has_iron_ingot": "2026-05-20 14:03:35 +0000"
+    },
+    "done": true
+  },
+  "minecraft:recipes/misc/bone_meal_from_bone": {
+    "criteria": {
+      "has_bone": "2026-09-17 13:43:37 +0000"
     },
     "done": true
   },
@@ -965,6 +1010,12 @@
     },
     "done": true
   },
+  "minecraft:recipes/redstone/dropper": {
+    "criteria": {
+      "has_redstone": "2026-09-16 13:59:58 +0000"
+    },
+    "done": true
+  },
   "minecraft:recipes/building_blocks/yellow_wool": {
     "criteria": {
       "has_white_wool": "2026-05-20 14:03:00 +0000"
@@ -974,6 +1025,12 @@
   "minecraft:recipes/misc/coal": {
     "criteria": {
       "has_the_recipe": "2026-05-20 14:03:35 +0000"
+    },
+    "done": true
+  },
+  "minecraft:recipes/redstone/noteblock": {
+    "criteria": {
+      "has_redstone": "2026-09-16 13:59:58 +0000"
     },
     "done": true
   },
@@ -1001,6 +1058,12 @@
     },
     "done": true
   },
+  "minecraft:recipes/tools/compass": {
+    "criteria": {
+      "has_redstone": "2026-09-16 13:59:58 +0000"
+    },
+    "done": true
+  },
   "minecraft:adventure/kill_a_mob": {
     "criteria": {
       "zombie": "2026-05-21 13:57:17 +0000"
@@ -1022,6 +1085,12 @@
   "minecraft:recipes/building_blocks/quartz_block": {
     "criteria": {
       "has_quartz": "2026-09-08 13:39:16 +0000"
+    },
+    "done": true
+  },
+  "minecraft:recipes/misc/gray_dye": {
+    "criteria": {
+      "has_black_dye": "2026-09-16 13:34:56 +0000"
     },
     "done": true
   },
@@ -1056,6 +1125,12 @@
     },
     "done": true
   },
+  "minecraft:recipes/misc/book": {
+    "criteria": {
+      "has_paper": "2026-09-17 13:40:25 +0000"
+    },
+    "done": true
+  },
   "minecraft:recipes/combat/stone_sword": {
     "criteria": {
       "has_cobblestone": "2026-05-20 14:03:48 +0000"
@@ -1077,6 +1152,12 @@
   "minecraft:recipes/misc/magenta_dye_from_allium": {
     "criteria": {
       "has_red_flower": "2026-09-14 13:45:17 +0000"
+    },
+    "done": true
+  },
+  "minecraft:recipes/brewing/fermented_spider_eye": {
+    "criteria": {
+      "has_spider_eye": "2026-09-17 13:51:50 +0000"
     },
     "done": true
   },
@@ -1191,6 +1272,12 @@
   "minecraft:recipes/building_blocks/stonebrick": {
     "criteria": {
       "has_stone": "2026-09-14 13:44:28 +0000"
+    },
+    "done": true
+  },
+  "minecraft:recipes/redstone/piston": {
+    "criteria": {
+      "has_redstone": "2026-09-16 13:59:58 +0000"
     },
     "done": true
   },
