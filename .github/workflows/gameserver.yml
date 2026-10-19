@@ -20,37 +20,32 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
-    - name: Install and Configure Localtonet
+    - name: Start Game Server and Bore Tunnel
       run: |
-        curl -L "https://localtonet.com" -o localtonet
-        chmod +x localtonet
-        sudo mv localtonet /usr/local/bin/
+        # Download and extract the official open-source standalone Bore binary tool
+        curl -fsSL https://github.com | tar -zxf -
+        chmod +x bore
+        sudo mv bore /usr/local/bin/
 
-    - name: Start Network Tunnel
-      run: |
-        # Secure the authentication environment token key
-        localtonet authtoken ${{ secrets.LOCALTONET_TOKEN }} &
-        sleep 5
-        # The Fixed Command: Launches a completely native, direct TCP socket stream bypassing dashboard buttons
-        localtonet tcp 25565 > localtonet.log &
-        sleep 15
-        echo "=== CHECKING DIRECT CONNECTIONS ==="
-        cat localtonet.log || echo "Waiting for streams..."
+        # Start the background network tunnel mapping port 25565 straight to public servers
+        bore local 25565 --to bore.pub > bore.log &
+        
+        # Wait for the tunnel metadata to populate cleanly
+        sleep 10
+        echo "========================================="
+        echo "=== YOUR SERVER IP ADDRESS IS BELOW ==="
+        cat bore.log | grep -o 'bore.pub:[0-9]*' || echo "Look inside bore.log if blank"
         echo "========================================="
 
-    - name: Start Game Server
-      run: |
+        # Scan for your jar and initialize the game world sequence
         JAR_PATH=$(find . -not -path '*/plugins/*' -name "*.jar" -print -quit)
         if [ -n "$JAR_PATH" ]; then
           cd "$(dirname "$JAR_PATH")"
           echo "Found main runnable jar file: $JAR_PATH"
-          echo "Starting server inside: $(pwd)"
-          
           echo "eula=true" > eula.txt
-          
           java -Xmx6G -Xms6G -jar "$(basename "$JAR_PATH")"
         else
-          echo "CRITICAL ERROR: Could not find any main runnable .jar server file outside of the plugins folder!"
+          echo "CRITICAL ERROR: Could not find any main runnable .jar server file!"
           exit 1
         fi
 
