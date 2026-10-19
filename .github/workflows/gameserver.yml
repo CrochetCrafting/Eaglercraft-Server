@@ -19,23 +19,25 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
-    - name: Set up Node.js (For Tunneling Installer)
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-
-    - name: Install and Configure Ngrok
+    - name: Install and Configure Localtonet
       run: |
-        npm install -g ngrok
-        ngrok config add-authtoken ${{ secrets.NGROK_AUTHTOKEN }}
+        # Download and extract the official standalone Localtonet binary
+        curl -L "https://localtonet.com" -o localtonet.zip
+        sudo apt-get install unzip -y
+        unzip localtonet.zip
+        sudo mv localtonet /usr/local/bin/
+        rm localtonet.zip
 
     - name: Start Network Tunnel
       run: |
-        ngrok tcp 25565 --log=stdout > ngrok.log &
+        # Launch localtonet TCP tunnel on Minecraft port 25565 using your secret token
+        localtonet authtoken ${{ secrets.LOCALTONET_TOKEN }} &
+        sleep 5
+        localtonet tcp --port 25565 > localtonet.log &
         sleep 15
-        echo "=== YOUR SERVER IP ADDRESS IS BELOW ==="
-        curl -s http://127.0.0 | grep -o 'tcp://[^"]*' || echo "Tunnel loading... Check ngrok.log if blank"
-        echo "======================================="
+        echo "=== CHECK LOGS FOR YOUR CONNECTION IP ==="
+        cat localtonet.log | grep -i "Server started" || echo "Look inside the Start Game Server console logs below for connection path info."
+        echo "========================================="
 
     - name: Start Game Server
       run: |
@@ -45,7 +47,6 @@ jobs:
           echo "Found main runnable jar file: $JAR_PATH"
           echo "Starting server inside: $(pwd)"
           
-          # The Magic Fix: Force generate a fresh eula=true right where the jar file lives
           echo "eula=true" > eula.txt
           
           java -Xmx6G -Xms6G -jar "$(basename "$JAR_PATH")"
