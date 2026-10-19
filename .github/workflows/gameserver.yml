@@ -57,4 +57,4 @@ jobs:
         git config --global user.email "action@github.com"
         git add .
         git commit -m "Auto-save world data and inventories [skip ci]" || exit 0
-        git push origin main || git push origin main --force
+        git push origin main --force
