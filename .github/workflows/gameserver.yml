@@ -5,7 +5,7 @@ on:
 
 permissions:
   contents: write
-  actions: write # The syntax fix: changed 'workflows' to the official 'actions' flag
+  actions: write
 
 jobs:
   run-server:
@@ -28,12 +28,14 @@ jobs:
 
     - name: Start Network Tunnel
       run: |
+        # Configures your unique authentication token key
         localtonet authtoken ${{ secrets.LOCALTONET_TOKEN }} &
         sleep 5
-        localtonet tcp --port 25565 > localtonet.log &
+        # The Fix: Forces the background engine to target your exact custom website tunnel ID number
+        localtonet start-tunnel 2388846 > localtonet.log &
         sleep 15
-        echo "=== CHECK LOGS FOR YOUR CONNECTION IP ==="
-        cat localtonet.log | grep -i "Server started" || echo "Look inside the Start Game Server console logs below for connection path info."
+        echo "=== CHECKING TUNNEL LOGS ==="
+        cat localtonet.log || echo "Loading console streams..."
         echo "========================================="
 
     - name: Start Game Server
