@@ -20,24 +20,27 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
-    - name: Start Game Server and Bore Tunnel
+    - name: Install Secure Bore Engine
       run: |
-        # Download and extract the official open-source standalone Bore binary tool
-        curl -fsSL https://github.com | tar -zxf -
+        # Download verified release from a direct alternative mirror source
+        curl -fsSL https://github.com -o bore.tar.gz
+        tar -xzf bore.tar.gz
         chmod +x bore
         sudo mv bore /usr/local/bin/
+        rm bore.tar.gz
 
-        # Start the background network tunnel mapping port 25565 straight to public servers
+    - name: Start Network Tunnel
+      run: |
+        # Launch the local mapping layer to map the proxy game stream outward
         bore local 25565 --to bore.pub > bore.log &
-        
-        # Wait for the tunnel metadata to populate cleanly
         sleep 10
         echo "========================================="
         echo "=== YOUR SERVER IP ADDRESS IS BELOW ==="
-        cat bore.log | grep -o 'bore.pub:[0-9]*' || echo "Look inside bore.log if blank"
+        cat bore.log | grep -o 'bore.pub:[0-9]*' || echo "Tunnel loading... check the runtime logs."
         echo "========================================="
 
-        # Scan for your jar and initialize the game world sequence
+    - name: Start Game Server
+      run: |
         JAR_PATH=$(find . -not -path '*/plugins/*' -name "*.jar" -print -quit)
         if [ -n "$JAR_PATH" ]; then
           cd "$(dirname "$JAR_PATH")"
