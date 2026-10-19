@@ -5,7 +5,7 @@ on:
 
 permissions:
   contents: write
-  workflows: write # Explicitly forces workflow update permissions
+  actions: write # The syntax fix: changed 'workflows' to the official 'actions' flag
 
 jobs:
   run-server:
@@ -57,7 +57,6 @@ jobs:
       run: |
         git config --global user.name "GitHub Action Server"
         git config --global user.email "action@github.com"
-        # Only save game data files, avoid saving workflow config changes back into the repo
         git add .
         git reset .github/workflows/
         git commit -m "Auto-save world data and inventories [skip ci]" || exit 0
