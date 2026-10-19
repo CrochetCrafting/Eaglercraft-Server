@@ -28,14 +28,14 @@ jobs:
 
     - name: Start Network Tunnel
       run: |
-        # Configures your unique authentication token key
+        # Secure the authentication environment token key
         localtonet authtoken ${{ secrets.LOCALTONET_TOKEN }} &
         sleep 5
-        # The Fix: Forces the background engine to target your exact custom website tunnel ID number
-        localtonet start-tunnel 2388846 > localtonet.log &
+        # The Fixed Command: Launches a completely native, direct TCP socket stream bypassing dashboard buttons
+        localtonet tcp 25565 > localtonet.log &
         sleep 15
-        echo "=== CHECKING TUNNEL LOGS ==="
-        cat localtonet.log || echo "Loading console streams..."
+        echo "=== CHECKING DIRECT CONNECTIONS ==="
+        cat localtonet.log || echo "Waiting for streams..."
         echo "========================================="
 
     - name: Start Game Server
