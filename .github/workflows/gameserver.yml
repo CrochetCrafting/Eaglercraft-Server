@@ -1,7 +1,10 @@
 name: 24-7 GitHub Game Server
 
 on:
-  workflow_dispatch: # Allows you to start it manually via a button click
+  workflow_dispatch:
+
+permissions: # Forces write access for the auto-save feature
+  contents: write
 
 jobs:
   run-server:
@@ -18,18 +21,18 @@ jobs:
 
     - name: Install and Configure Ngrok
       run: |
-        # Download and extract the official standalone Linux binary directly
-        curl -fsSL https://bin.ngrok.com/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz | tar -xz
+        curl -fsSL https://ngrok.com | tar -xz
         sudo mv ngrok /usr/local/bin/
         ngrok config add-authtoken ${{ secrets.NGROK_AUTHTOKEN }}
 
     - name: Start Network Tunnel
       run: |
-        # Launches the ngrok tunnel on port 25565
-        ngrok tcp --region=us 25565 --log=stdout > ngrok.log &
-        sleep 5
+        # Explicitly tells ngrok to start using HTTP configuration API access
+        ngrok tcp 25565 --log=stdout > ngrok.log &
+        # Added extra sleep time so ngrok has plenty of time to boot up completely
+        sleep 15
         echo "=== YOUR SERVER IP ADDRESS IS BELOW ==="
-        curl -s http://127.0.0 | grep -o 'tcp://[^"]*'
+        curl -s http://127.0.0 | grep -o 'tcp://[^"]*' || echo "Tunnel loading... Check ngrok.log if blank"
         echo "======================================="
 
     - name: Start Game Server
