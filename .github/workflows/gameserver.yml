@@ -21,11 +21,8 @@ jobs:
 
     - name: Install and Configure Ngrok
       run: |
-        # Fixed direct package file link path layout
-        curl -fsSL "https://ngrok.com" -o ngrok.tgz
-        tar -xzf ngrok.tgz
-        sudo mv ngrok /usr/local/bin/
-        rm ngrok.tgz
+        # Use the official one-line Linux script installer to bypass zip file issues entirely
+        curl -s https://amazonaws.com | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null && echo "deb https://amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list && sudo apt-get update && sudo apt-get install ngrok -y
         ngrok config add-authtoken ${{ secrets.NGROK_AUTHTOKEN }}
 
     - name: Start Network Tunnel
