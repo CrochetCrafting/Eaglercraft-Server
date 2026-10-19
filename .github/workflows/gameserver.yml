@@ -39,12 +39,15 @@ jobs:
 
     - name: Start Game Server
       run: |
-        # Explicitly tells the search tool to ignore the plugins folder layout completely
         JAR_PATH=$(find . -not -path '*/plugins/*' -name "*.jar" -print -quit)
         if [ -n "$JAR_PATH" ]; then
           cd "$(dirname "$JAR_PATH")"
           echo "Found main runnable jar file: $JAR_PATH"
           echo "Starting server inside: $(pwd)"
+          
+          # The Magic Fix: Force generate a fresh eula=true right where the jar file lives
+          echo "eula=true" > eula.txt
+          
           java -Xmx6G -Xms6G -jar "$(basename "$JAR_PATH")"
         else
           echo "CRITICAL ERROR: Could not find any main runnable .jar server file outside of the plugins folder!"
