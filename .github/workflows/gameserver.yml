@@ -21,16 +21,14 @@ jobs:
 
     - name: Install and Configure Localtonet
       run: |
-        # Download and extract the official standalone Localtonet binary
-        curl -L "https://localtonet.com" -o localtonet.zip
-        sudo apt-get install unzip -y
-        unzip localtonet.zip
+        # Fixed direct binary download method to bypass zip archive errors completely
+        curl -L "https://localtonet.com" -o localtonet
+        chmod +x localtonet
         sudo mv localtonet /usr/local/bin/
-        rm localtonet.zip
 
     - name: Start Network Tunnel
       run: |
-        # Launch localtonet TCP tunnel on Minecraft port 25565 using your secret token
+        # Launch localtonet TCP tunnel on Minecraft port 25565 using your secret token variables
         localtonet authtoken ${{ secrets.LOCALTONET_TOKEN }} &
         sleep 5
         localtonet tcp --port 25565 > localtonet.log &
