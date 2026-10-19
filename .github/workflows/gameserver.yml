@@ -26,7 +26,7 @@ jobs:
     - name: Start Network Tunnel
       run: |
         # Launches the ngrok tunnel on port 25565
-        ngrok tcp 25565 --log=stdout > ngrok.log &
+        ngrok tcp --region=us 25565 --log=stdout > ngrok.log &
         sleep 5
         echo "=== YOUR SERVER IP ADDRESS IS BELOW ==="
         curl -s http://127.0.0 | grep -o 'tcp://[^"]*'
