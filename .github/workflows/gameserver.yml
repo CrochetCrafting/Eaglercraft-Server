@@ -39,14 +39,15 @@ jobs:
 
     - name: Start Game Server
       run: |
-        # Automatically finds where EaglerXRewind.jar is hidden and changes directory to it
-        JAR_PATH=$(find . -name "EaglerXRewind.jar" -print -quit)
+        # Explicitly tells the search tool to ignore the plugins folder layout completely
+        JAR_PATH=$(find . -not -path '*/plugins/*' -name "*.jar" -print -quit)
         if [ -n "$JAR_PATH" ]; then
           cd "$(dirname "$JAR_PATH")"
-          echo "Found jar file! Starting server inside: $(pwd)"
-          java -Xmx6G -Xms6G -jar EaglerXRewind.jar
+          echo "Found main runnable jar file: $JAR_PATH"
+          echo "Starting server inside: $(pwd)"
+          java -Xmx6G -Xms6G -jar "$(basename "$JAR_PATH")"
         else
-          echo "CRITICAL ERROR: Could not find EaglerXRewind.jar anywhere in the repository!"
+          echo "CRITICAL ERROR: Could not find any main runnable .jar server file outside of the plugins folder!"
           exit 1
         fi
 
