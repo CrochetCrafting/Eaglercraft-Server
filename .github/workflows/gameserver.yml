@@ -10,22 +10,22 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v4
 
-    - name: Set up Java (For Minecraft)
+    - name: Set up Java (For EaglerXServer)
       uses: actions/setup-java@v4
       with:
         distribution: 'temurin'
-        java-version: '17' # Change to 21 if using newer MC versions
+        java-version: '17'
 
     - name: Install and Configure Ngrok
       run: |
-        curl -s https://amazonaws.com | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null
-        echo "deb https://amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list
-        sudo apt-get update && sudo apt-get install ngrok
+        # Download and extract the official standalone Linux binary directly
+        curl -fsSL https://bin.ngrok.com/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz | tar -xz
+        sudo mv ngrok /usr/local/bin/
         ngrok config add-authtoken ${{ secrets.NGROK_AUTHTOKEN }}
 
     - name: Start Network Tunnel
       run: |
-        # Launches the ngrok tunnel in the background on Minecraft Java port 25565
+        # Launches the ngrok tunnel on port 25565
         ngrok tcp 25565 --log=stdout > ngrok.log &
         sleep 5
         echo "=== YOUR SERVER IP ADDRESS IS BELOW ==="
@@ -34,8 +34,7 @@ jobs:
 
     - name: Start Game Server
       run: |
-        # If your server file has a different name (like server.jar), change it below
-        java -Xmx6G -Xms6G -jar forge.jar nogui 
+        java -Xmx6G -Xms6G -jar EaglerXRewind.jar
 
     - name: Auto-Save World Progress Back to GitHub
       if: always()
