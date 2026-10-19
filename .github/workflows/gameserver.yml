@@ -26,7 +26,6 @@ jobs:
 
     - name: Install and Configure Ngrok
       run: |
-        # Use npm to safely install ngrok without touching apt-get or broken URLs
         npm install -g ngrok
         ngrok config add-authtoken ${{ secrets.NGROK_AUTHTOKEN }}
 
@@ -40,7 +39,16 @@ jobs:
 
     - name: Start Game Server
       run: |
-        java -Xmx6G -Xms6G -jar EaglerXRewind.jar
+        # Automatically finds where EaglerXRewind.jar is hidden and changes directory to it
+        JAR_PATH=$(find . -name "EaglerXRewind.jar" -print -quit)
+        if [ -n "$JAR_PATH" ]; then
+          cd "$(dirname "$JAR_PATH")"
+          echo "Found jar file! Starting server inside: $(pwd)"
+          java -Xmx6G -Xms6G -jar EaglerXRewind.jar
+        else
+          echo "CRITICAL ERROR: Could not find EaglerXRewind.jar anywhere in the repository!"
+          exit 1
+        fi
 
     - name: Auto-Save World Progress Back to GitHub
       if: always()
@@ -49,4 +57,4 @@ jobs:
         git config --global user.email "action@github.com"
         git add .
         git commit -m "Auto-save world data and inventories [skip ci]" || exit 0
-        git push
+        git push origin main || git push origin main --force
