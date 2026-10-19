@@ -5,6 +5,7 @@ on:
 
 permissions:
   contents: write
+  workflows: write # Explicitly forces workflow update permissions
 
 jobs:
   run-server:
@@ -21,14 +22,12 @@ jobs:
 
     - name: Install and Configure Localtonet
       run: |
-        # Fixed direct binary download method to bypass zip archive errors completely
         curl -L "https://localtonet.com" -o localtonet
         chmod +x localtonet
         sudo mv localtonet /usr/local/bin/
 
     - name: Start Network Tunnel
       run: |
-        # Launch localtonet TCP tunnel on Minecraft port 25565 using your secret token variables
         localtonet authtoken ${{ secrets.LOCALTONET_TOKEN }} &
         sleep 5
         localtonet tcp --port 25565 > localtonet.log &
@@ -58,6 +57,8 @@ jobs:
       run: |
         git config --global user.name "GitHub Action Server"
         git config --global user.email "action@github.com"
+        # Only save game data files, avoid saving workflow config changes back into the repo
         git add .
+        git reset .github/workflows/
         git commit -m "Auto-save world data and inventories [skip ci]" || exit 0
         git push origin main --force
