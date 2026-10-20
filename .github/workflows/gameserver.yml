@@ -22,18 +22,19 @@ jobs:
 
     - name: Start Network Tunnel and Game Server
       run: |
-        # Launch a background TCP tunnel using the native Linux SSH utility (no download required)
-        # It takes port 25565 and maps it instantly onto a free pinggy network socket route
-        ssh -p 443 -o StrictHostKeyChecking=no -o ServerAliveInterval=30 tcp@a.pinggy.io R:25565:localhost:25565 > pinggy.log &
+        # Launch a background TCP tunnel using localhost.run's native SSH infrastructure
+        # This maps port 25565 straight onto a free public network socket route cleanly
+        ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -R 80:localhost:25565 nokey@localhost.run > tunnel.log &
         
-        # Give the background network engine a few seconds to populate details cleanly
-        sleep 10
+        # Give the background network engine ample time to negotiate the handshake rules
+        sleep 15
         echo "========================================="
         echo "=== YOUR SERVER IP ADDRESS IS BELOW ==="
-        cat pinggy.log | grep -o 'a.pinggy.io:[0-9]*' || echo "Tunnel loading... please review the log output streams."
+        cat tunnel.log | grep -o '[a-zA-Z0-9]*\.localhost\.run:[0-9]*' || echo "Tunnel initializing... check text log dump below:"
+        cat tunnel.log || echo "Empty log dump"
         echo "========================================="
 
-        # Automatically locate your game engine executable and initialize the world matrix
+        # Locate your game engine executable and initialize the world matrix
         JAR_PATH=$(find . -not -path '*/plugins/*' -name "*.jar" -print -quit)
         if [ -n "$JAR_PATH" ]; then
           cd "$(dirname "$JAR_PATH")"
