@@ -1,57 +1,31 @@
-name: 24-7 GitHub Game Server
+name: Localhost Workflow
 
-on:
-  workflow_dispatch:
-
-permissions:
-  contents: write
-  actions: write
+on: [push]
 
 jobs:
-  run-server:
+  run-localhost:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up Java (For EaglerXServer)
-      uses: actions/setup-java@v4
-      with:
-        distribution: 'temurin'
-        java-version: '17'
+      # Install your dependencies here (e.g., npm install / pip install)
 
-    - name: Start Network Tunnel and Game Server
-      run: |
-        # Launch a background TCP tunnel using localhost.run's native SSH infrastructure
-        # This maps port 25565 straight onto a free public network socket route cleanly
-        ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -R 80:localhost:25565 nokey@localhost.run > tunnel.log &
-        
-        # Give the background network engine ample time to negotiate the handshake rules
-        sleep 15
-        echo "========================================="
-        echo "=== YOUR SERVER IP ADDRESS IS BELOW ==="
-        cat tunnel.log | grep -o '[a-zA-Z0-9]*\.localhost\.run:[0-9]*' || echo "Tunnel initializing... check text log dump below:"
-        cat tunnel.log || echo "Empty log dump"
-        echo "========================================="
-
-        # Locate your game engine executable and initialize the world matrix
-        JAR_PATH=$(find . -not -path '*/plugins/*' -name "*.jar" -print -quit)
-        if [ -n "$JAR_PATH" ]; then
-          cd "$(dirname "$JAR_PATH")"
-          echo "Found main runnable jar file: $JAR_PATH"
-          echo "eula=true" > eula.txt
-          java -Xmx6G -Xms6G -jar "$(basename "$JAR_PATH")"
-        else
-          echo "CRITICAL ERROR: Could not find any main runnable .jar server file!"
-          exit 1
-        fi
-
-    - name: Auto-Save World Progress Back to GitHub
-      if: always()
-      run: |
-        git config --global user.name "GitHub Action Server"
-        git config --global user.email "action@github.com"
-        git add .
-        git reset .github/workflows/
-        git commit -m "Auto-save world data and inventories [skip ci]" || exit 0
-        git push origin main --force
+      - name: Start Server and Run Tests (The Fix)
+        run: |
+          # 1. Start your app in the background
+          npm run start & 
+          
+          # 2. Force GitHub to wait until localhost is actually listening
+          echo "Waiting for localhost to wake up..."
+          until $(curl --output /dev/null --silent --head --fail http://localhost:3000); do
+            printf '.'
+            sleep 1
+          done
+          echo "Localhost is up and running!"
+          
+          # 3. Run whatever commands you need to hit localhost
+          curl http://localhost:3000/api/endpoint
+          
+          # 4. OPTIONAL: If you want to keep the GitHub Action running forever (permanent until timeout)
+          # tail -f /dev/null
