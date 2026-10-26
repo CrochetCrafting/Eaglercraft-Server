@@ -1,4 +1,4 @@
-name: Eaglercraft Server Workflow
+name: Eaglercraft Permanent Server
 
 on:
   push:
@@ -19,27 +19,43 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Start Game Server and Keep Alive
+      - name: Start Game Server and Inject Tunnel
         run: |
           cd ${{ github.workspace }}
           
-          # FORCE EULA TO TRUE (Fixes the dynamic file isolation issue)
+          # 1. Force EULA to true so it doesn't crash on boot
           echo "eula=true" > eula.txt
-          echo "Force-wrote eula.txt to true!"
 
-          # Make the run script executable
+          # 2. Make your launch script executable and boot the server
           chmod +x ./run.sh
-          
-          # 1. Start the server using your repository's native run script
           ./run.sh &
           
-          # 2. Wait for the server port to open
-          echo "Waiting for Eaglercraft server to bind to port..."
+          # 3. Wait until the server is fully booted on port 25565
+          echo "Waiting for Eaglercraft to bind to port 25565..."
           until nc -z localhost 25565; do
             printf '.'
             sleep 3
           done
           echo "Server is successfully running on localhost!"
+
+          # 4. Open the permanent public tunnel to port 25565
+          # This saves the connection URLs to a local file
+          ssh -p 443 -R 0:localhost:25565 -o StrictHostKeyChecking=no a.pinggy.io > pinggy.log &
           
-          # 3. Force the runner to stay online permanently
-          tail -f /dev/null
+          # Give the tunnel 8 seconds to handshake and generate links
+          sleep 8
+          
+          # 5. Extract the secure HTTPS link and transform it into an Eagler wss:// link
+          HTTPS_LINK=$(grep -oE 'https://[a-zA-Z0-9.-]+\.pinggy\.link' pinggy.log | head -n 1)
+          WSS_LINK=$(echo "$HTTPS_LINK" | sed 's/https:\/\//wss:\/\//')
+
+          echo "=================================================="
+          echo "YOUR PERMANENT EAGLERCRAFT SERVER IS LIVE!"
+          echo "Copy and paste this link into your client browser:"
+          echo "$WSS_LINK"
+          echo "=================================================="
+
+      # 6. FORCE RUNNER TO STAY ONLINE PERMANENTLY
+      # This stops GitHub from closing the server (Up to the hard 6-hour limit)
+      - name: Keep Server Alive Permanent
+        run: tail -f /dev/null
