@@ -14,20 +14,18 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: 'maven'
+          # Removed the cache option to prevent the pom.xml error
 
       - name: Start Game Server and Keep Alive
         run: |
           # 1. Start your Eaglercraft server in the background
-          # Make sure 'EaglerXRewind.jar' or your startup script matches your root folder configuration
           java -Xmx2G -Xms2G -jar EaglerXRewind.jar nogui &
           
           # 2. Wait for the server port to open (Fixes Connection Refused)
-          # Default Minecraft/Eaglercraft port is 25565. Change this number if your server uses a different port.
           echo "Waiting for Eaglercraft server to bind to port..."
           until nc -z localhost 25565; do
             printf '.'
