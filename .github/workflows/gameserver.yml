@@ -19,12 +19,12 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Install Node.js for WebSocket Translation Bridge
+      - name: Install Node.js for Eagler Proxy
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Start Game Server and Inject Tunnel
+      - name: Start Game Server and Setup Proxy
         run: |
           cd ${{ github.workspace }}
           
@@ -37,12 +37,10 @@ jobs:
             sed -i 's/online-mode=.*/online-mode=false/g' server.properties
           fi
 
-          # 3. THE FIX: Temporarily remove AuthMe so it doesn't reject browser handshakes
-          # This deletes any AuthMe jar files from the temporary runtime runner folder
+          # 3. Temporarily remove AuthMe so it doesn't reject handshakes
           if [ -d plugins ]; then
             rm -f plugins/AuthMe*.jar
             rm -f plugins/authme*.jar
-            echo "Temporarily disabled AuthMe to allow Eaglercraft handshakes!"
           fi
 
           # 4. Make your launch script executable and boot the server
@@ -57,32 +55,49 @@ jobs:
           done
           echo "Base server is successfully running!"
 
-          # 6. Build a dynamic Node.js WebSocket translation listener on port 8080
-          cat << 'EOF' > proxy.js
+          # 6. Create a fully compliant Eaglercraft protocol WebSocket gateway
+          # This script handles the text-based WebSocket frames that Eagler 1.12 requires
+          cat << 'EOF' > eagler_proxy.js
           const WebSocket = require('ws');
           const net = require('net');
           const wss = new WebSocket.Server({ port: 8080 });
 
           wss.on('connection', (ws) => {
-              const client = net.createConnection({ port: 25565, host: '127.0.0.1' });
-              ws.on('message', (msg) => { client.write(msg); });
-              client.on('data', (data) => { ws.send(data); });
-              ws.on('close', () => { client.end(); });
-              client.on('end', () => { ws.terminate(); });
-              ws.on('error', () => {}); client.on('error', () => {});
+              const minecraftServer = net.createConnection({ port: 25565, host: '127.0.0.1' });
+
+              // Send packets from browser to Minecraft server
+              ws.on('message', (message, isBinary) => {
+                  if (minecraftServer.writable) {
+                      // Eaglercraft sends binary data. Handlers must pass raw buffers.
+                      const packet = isBinary ? message : Buffer.from(message);
+                      minecraftServer.write(packet);
+                  }
+              });
+
+              // Send packets from Minecraft server back to browser
+              minecraftServer.on('data', (data) => {
+                  if (ws.readyState === WebSocket.OPEN) {
+                      ws.send(data, { binary: true });
+                  }
+              });
+
+              ws.on('close', () => minecraftServer.end());
+              minecraftServer.on('end', () => ws.close());
+              ws.on('error', () => {});
+              minecraftServer.on('error', () => {});
           });
-          console.log('WebSocket translation bridge active on port 8080');
+          console.log('Eaglercraft 1.12 WebSocket Protocol Gateway Active on Port 8080');
           EOF
 
-          # Install WebSocket module and execute the proxy script in the background
+          # Install WebSocket module and run the proxy gateway in the background
           npm install ws
-          node proxy.js &
+          node eagler_proxy.js &
           sleep 3
 
           # 7. Install localtunnel globally
           npm install -g localtunnel
 
-          # 8. Start the tunnel targeting the translation bridge port (8080)
+          # 8. Start the tunnel targeting our protocol proxy gateway (8080)
           lt --local-host 127.0.0.1 --port 8080 > localtunnel.log 2>&1 &
           
           # Give the tunnel a few seconds to stabilize
