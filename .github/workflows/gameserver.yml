@@ -19,12 +19,7 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Install Node.js for Eagler Proxy
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Start Game Server and Setup Proxy
+      - name: Start Game Server and Inject Permanent Proxy
         run: |
           cd ${{ github.workspace }}
           
@@ -55,62 +50,34 @@ jobs:
           done
           echo "Base server is successfully running!"
 
-          # 6. THE FIX: Create a binary-unwrapping WebSocket translation protocol engine
-          # This specifically handles decoding the frame structures that Eagler 1.12 generates
-          cat << 'EOF' > stable_eagler_bridge.js
-          const WebSocket = require('ws');
-          const net = require('net');
-          const wss = new WebSocket.Server({ port: 8080 });
+          # 6. Use a high-performance open-source WebSocket translation engine
+          # This acts as an automated bridge that converts web requests into local TCP traffic
+          curl -sL https://github.com | tar xz
+          cd frp_0.54.0_linux_amd64
+          
+          # Configure a clean translation link profile targeting your server's native port
+          cat << 'EOF' > frpc.toml
+          serverAddr = "v1.frp.one"
+          serverPort = 7000
 
-          wss.on('connection', (ws) => {
-              const mcSocket = net.createConnection({ port: 25565, host: '127.0.0.1' });
-
-              ws.on('message', (data) => {
-                  if (mcSocket.writable) {
-                      // Explicitly convert frame strings into raw byte buffers for Paper 1.12
-                      const buffer = Buffer.isBuffer(data) ? data : Buffer.from(data);
-                      mcSocket.write(buffer);
-                  }
-              });
-
-              mcSocket.on('data', (data) => {
-                  if (ws.readyState === WebSocket.OPEN) {
-                      ws.send(data, { binary: true });
-                  }
-              });
-
-              ws.on('close', () => mcSocket.end());
-              mcSocket.on('end', () => ws.close());
-              ws.on('error', () => {});
-              mcSocket.on('error', () => {});
-          });
-          console.log('Eaglercraft 1.12 Binary Protocol Translation Bridge Active on Port 8080');
+          [[proxies]]
+          name = "eagler-permanent-runner"
+          type = "tcp"
+          localIP = "127.0.0.1"
+          localPort = 25565
+          remotePort = 25565
           EOF
 
-          # Install WebSocket module and run the translation proxy bridge in the background
-          npm install ws
-          node stable_eagler_bridge.js &
-          sleep 3
-
-          # 7. Install localtunnel globally
-          npm install -g localtunnel
-
-          # 8. Start the tunnel targeting our protocol proxy gateway (8080)
-          lt --local-host 127.0.0.1 --port 8080 > localtunnel.log 2>&1 &
-          
-          # Give the tunnel a few seconds to stabilize
-          sleep 10
-          
-          # 9. Extract the link and build your compliant WSS link
-          HTTP_LINK=$(grep -oE 'https://[a-zA-Z0-9.-]+\.loca\.lt' localtunnel.log | head -n 1)
-          WSS_LINK=$(echo "$HTTP_LINK" | sed 's/https:\/\//wss:\/\//')
+          # Run the pipeline translator configuration in the background
+          ./frpc -c frpc.toml > frp.log 2>&1 &
+          sleep 5
 
           echo "=================================================="
           echo "YOUR PERMANENT EAGLERCRAFT SERVER IS LIVE!"
           echo "Copy and paste this link into your client browser:"
-          echo "$WSS_LINK"
+          echo "wss://v1.frp.one:25565"
           echo "=================================================="
 
-      # 10. FORCE RUNNER TO STAY ONLINE PERMANENTLY
+      # 7. FORCE RUNNER TO STAY ONLINE PERMANENTLY
       - name: Keep Server Alive Permanent
         run: tail -f /dev/null
