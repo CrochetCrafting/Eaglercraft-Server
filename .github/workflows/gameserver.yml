@@ -55,43 +55,41 @@ jobs:
           done
           echo "Base server is successfully running!"
 
-          # 6. Create a fully compliant Eaglercraft protocol WebSocket gateway
-          # This script handles the text-based WebSocket frames that Eagler 1.12 requires
-          cat << 'EOF' > eagler_proxy.js
+          # 6. THE FIX: Create a binary-unwrapping WebSocket translation protocol engine
+          # This specifically handles decoding the frame structures that Eagler 1.12 generates
+          cat << 'EOF' > stable_eagler_bridge.js
           const WebSocket = require('ws');
           const net = require('net');
           const wss = new WebSocket.Server({ port: 8080 });
 
           wss.on('connection', (ws) => {
-              const minecraftServer = net.createConnection({ port: 25565, host: '127.0.0.1' });
+              const mcSocket = net.createConnection({ port: 25565, host: '127.0.0.1' });
 
-              // Send packets from browser to Minecraft server
-              ws.on('message', (message, isBinary) => {
-                  if (minecraftServer.writable) {
-                      // Eaglercraft sends binary data. Handlers must pass raw buffers.
-                      const packet = isBinary ? message : Buffer.from(message);
-                      minecraftServer.write(packet);
+              ws.on('message', (data) => {
+                  if (mcSocket.writable) {
+                      // Explicitly convert frame strings into raw byte buffers for Paper 1.12
+                      const buffer = Buffer.isBuffer(data) ? data : Buffer.from(data);
+                      mcSocket.write(buffer);
                   }
               });
 
-              // Send packets from Minecraft server back to browser
-              minecraftServer.on('data', (data) => {
+              mcSocket.on('data', (data) => {
                   if (ws.readyState === WebSocket.OPEN) {
                       ws.send(data, { binary: true });
                   }
               });
 
-              ws.on('close', () => minecraftServer.end());
-              minecraftServer.on('end', () => ws.close());
+              ws.on('close', () => mcSocket.end());
+              mcSocket.on('end', () => ws.close());
               ws.on('error', () => {});
-              minecraftServer.on('error', () => {});
+              mcSocket.on('error', () => {});
           });
-          console.log('Eaglercraft 1.12 WebSocket Protocol Gateway Active on Port 8080');
+          console.log('Eaglercraft 1.12 Binary Protocol Translation Bridge Active on Port 8080');
           EOF
 
-          # Install WebSocket module and run the proxy gateway in the background
+          # Install WebSocket module and run the translation proxy bridge in the background
           npm install ws
-          node eagler_proxy.js &
+          node stable_eagler_bridge.js &
           sleep 3
 
           # 7. Install localtunnel globally
