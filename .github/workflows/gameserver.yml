@@ -39,11 +39,11 @@ jobs:
           echo "Server is successfully running on localhost!"
 
           # 4. Open the permanent public tunnel to port 25565
-          # This saves the connection URLs to a local file
-          ssh -p 443 -R 0:localhost:25565 -o StrictHostKeyChecking=no a.pinggy.io > pinggy.log &
+          # FIXED: Added the -y flag to auto-accept the key handshake immediately
+          ssh -p 443 -y -R 0:localhost:25565 -o StrictHostKeyChecking=no a.pinggy.io > pinggy.log &
           
-          # Give the tunnel 8 seconds to handshake and generate links
-          sleep 8
+          # Give the tunnel a few moments to establish and output links
+          sleep 10
           
           # 5. Extract the secure HTTPS link and transform it into an Eagler wss:// link
           HTTPS_LINK=$(grep -oE 'https://[a-zA-Z0-9.-]+\.pinggy\.link' pinggy.log | head -n 1)
@@ -56,6 +56,5 @@ jobs:
           echo "=================================================="
 
       # 6. FORCE RUNNER TO STAY ONLINE PERMANENTLY
-      # This stops GitHub from closing the server (Up to the hard 6-hour limit)
       - name: Keep Server Alive Permanent
         run: tail -f /dev/null
