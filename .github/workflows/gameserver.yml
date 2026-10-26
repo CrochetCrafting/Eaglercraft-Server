@@ -18,14 +18,13 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-          # Removed the cache option to prevent the pom.xml error
 
       - name: Start Game Server and Keep Alive
         run: |
-          # 1. Start your Eaglercraft server in the background
+          # 1. Start your Eaglercraft server with the exact capital X
           java -Xmx2G -Xms2G -jar EaglerXRewind.jar nogui &
           
-          # 2. Wait for the server port to open (Fixes Connection Refused)
+          # 2. Wait for the server port to open
           echo "Waiting for Eaglercraft server to bind to port..."
           until nc -z localhost 25565; do
             printf '.'
@@ -33,5 +32,5 @@ jobs:
           done
           echo "Server is successfully running on localhost!"
           
-          # 3. Force the runner to stay online permanently (Up to GitHub's 6-hour limit)
+          # 3. Force the runner to stay online permanently
           tail -f /dev/null
