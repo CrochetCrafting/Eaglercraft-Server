@@ -24,52 +24,52 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Start Game Server and Setup Secure Tunnel
+      - name: Start Game Server and Inject Tunnel
         run: |
           cd ${{ github.workspace }}
           
           # 1. Force EULA to true
           echo "eula=true" > eula.txt
 
-          # 2. THE FIX: Force server.properties to bind to all interfaces cleanly
+          # 2. Force server.properties configuration bindings
           if [ -f server.properties ]; then
             sed -i 's/server-ip=.*/server-ip=0.0.0.0/g' server.properties
-            echo "Forced server-ip to 0.0.0.0 in server.properties"
+            sed -i 's/online-mode=.*/online-mode=false/g' server.properties
           fi
 
-          # 3. THE FIX: Force EaglercraftXServer listeners configuration to accept local loopbacks
-          # This replaces whatever address is inside listeners.yml with '0.0.0.0:25565'
+          # 3. CRUCIAL FIX: Force listeners.yml to accept cross-origin web requests from onrender
+          # This appends the origin allowance settings right to the file layout dynamically
           if [ -f plugins/EaglercraftXServer/listeners.yml ]; then
-            sed -i 's/address:.*/address: "0.0.0.0:25565"/g' plugins/EaglercraftXServer/listeners.yml
-            echo "Forced Eaglercraft listener binding to 0.0.0.0:25565"
+            echo "origin_rules:" >> plugins/EaglercraftXServer/listeners.yml
+            echo "  allow_all: true" >> plugins/EaglercraftXServer/listeners.yml
+            echo "  origins:" >> plugins/EaglercraftXServer/listeners.yml
+            echo "    - '*'" >> plugins/EaglercraftXServer/listeners.yml
+            echo "Forced wildcard origin rules inside listeners.yml"
           fi
 
-          # 4. Make your launch script executable and boot the server
+          # 4. Make launch script executable and boot the server
           chmod +x ./run.sh
           ./run.sh &
           
-          # 5. Wait until the server is fully booted on port 25565 (Using explicit 127.0.0.1 loopback)
+          # 5. Wait until the server is fully booted on port 25565
           echo "Waiting for Eaglercraft to bind to port 25565..."
           until nc -z 127.0.0.1 25565; do
             printf '.'
             sleep 3
           done
-          echo "Server is successfully running on 127.0.0.1:25565!"
+          echo "Server is successfully running!"
 
           # 6. Install localtunnel globally
           npm install -g localtunnel
 
-          # 7. THE FIX: Use local host IP '127.0.0.1' instead of the 'localhost' word token
-          # This forces localtunnel to drop the handshake token and grab raw TCP packets
+          # 7. Start the tunnel pointing directly to the local network adapter interface
           lt --local-host 127.0.0.1 --port 25565 > localtunnel.log 2>&1 &
           
-          # Give the tunnel a few seconds to connect to the cloud server
-          sleep 8
+          # Give the tunnel a few seconds to stabilize
+          sleep 10
           
-          # 8. Extract the unique secure URL assigned to your runner
+          # 8. Extract the link and build your compliant WSS link
           HTTP_LINK=$(grep -oE 'https://[a-zA-Z0-9.-]+\.loca\.lt' localtunnel.log | head -n 1)
-          
-          # Convert the https:// prefix to a browser-compliant wss:// websocket link
           WSS_LINK=$(echo "$HTTP_LINK" | sed 's/https:\/\//wss:\/\//')
 
           echo "=================================================="
@@ -77,13 +77,6 @@ jobs:
           echo "Copy and paste this link into your client browser:"
           echo "$WSS_LINK"
           echo "=================================================="
-          
-          # Fallback: log output verification if it fails to parse
-          if [ -z "$WSS_LINK" ]; then
-            echo "--- RAW TUNNEL LOG STATUS ---"
-            cat localtunnel.log
-            echo "------------------------------"
-          fi
 
       # 9. FORCE RUNNER TO STAY ONLINE PERMANENTLY
       - name: Keep Server Alive Permanent
