@@ -19,7 +19,7 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Install Node.js for LocalTunnel
+      - name: Install Node.js for WebSocket Translation Bridge
         uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -31,52 +31,57 @@ jobs:
           # 1. Force EULA to true
           echo "eula=true" > eula.txt
 
-          # 2. FIX: Force completely offline authentication settings
+          # 2. Force server.properties configuration to offline mode
           if [ -f server.properties ]; then
             sed -i 's/server-ip=.*/server-ip=0.0.0.0/g' server.properties
             sed -i 's/online-mode=.*/online-mode=false/g' server.properties
-            sed -i 's/pvp=.*/pvp=true/g' server.properties
           fi
 
-          # 3. FIX: Disable BungeeCord pipeline verification inside spigot.yml
-          if [ -f spigot.yml ]; then
-            sed -i 's/bungeecord:.*/bungeecord: false/g' spigot.yml
-          fi
-
-          # 4. FIX: Wipe proxy forwarding checks that drop incoming browser sessions
-          if [ -f plugins/EaglercraftXServer/listeners.yml ]; then
-            sed -i 's/forward_ip:.*/forward_ip: false/g' plugins/EaglercraftXServer/listeners.yml
-            sed -i 's/websocket_address_forwarded:.*/websocket_address_forwarded: false/g' plugins/EaglercraftXServer/listeners.yml
-            
-            # Re-apply our successful cross-origin rules
-            echo "origin_rules:" >> plugins/EaglercraftXServer/listeners.yml
-            echo "  allow_all: true" >> plugins/EaglercraftXServer/listeners.yml
-            echo "  origins:" >> plugins/EaglercraftXServer/listeners.yml
-            echo "    - '*'" >> plugins/EaglercraftXServer/listeners.yml
-          fi
-
-          # 5. Make launch script executable and boot the server
+          # 3. Make your launch script executable and boot the server
           chmod +x ./run.sh
           ./run.sh &
           
-          # 6. Wait until the server is fully booted on port 25565
-          echo "Waiting for Eaglercraft to bind to port 25565..."
+          # 4. Wait until the server is fully booted on port 25565
+          echo "Waiting for Paper server to bind to port 25565..."
           until nc -z 127.0.0.1 25565; do
             printf '.'
             sleep 3
           done
-          echo "Server is successfully running!"
+          echo "Base server is successfully running!"
 
-          # 7. Install localtunnel globally
+          # 5. Build a dynamic Node.js WebSocket translation listener on port 8080
+          # This acts as the direct protocol translator your browser client requires
+          cat << 'EOF' > proxy.js
+          const WebSocket = require('ws');
+          const net = require('net');
+          const wss = new WebSocket.Server({ port: 8080 });
+
+          wss.on('connection', (ws) => {
+              const client = net.createConnection({ port: 25565, host: '127.0.0.1' });
+              ws.on('message', (msg) => { client.write(msg); });
+              client.on('data', (data) => { ws.send(data); });
+              ws.on('close', () => { client.end(); });
+              client.on('end', () => { ws.terminate(); });
+              ws.on('error', () => {}); client.on('error', () => {});
+          });
+          console.log('WebSocket translation bridge active on port 8080');
+          EOF
+
+          # Install WebSocket module and execute the proxy script in the background
+          npm install ws
+          node proxy.js &
+          sleep 3
+
+          # 6. Install localtunnel globally
           npm install -g localtunnel
 
-          # 8. Start the tunnel pointing directly to the local network adapter interface
-          lt --local-host 127.0.0.1 --port 25565 > localtunnel.log 2>&1 &
+          # 7. Start the tunnel targeting the translation bridge port (8080) instead of the game port
+          lt --local-host 127.0.0.1 --port 8080 > localtunnel.log 2>&1 &
           
           # Give the tunnel a few seconds to stabilize
           sleep 10
           
-          # 9. Extract the link and build your compliant WSS link
+          # 8. Extract the link and build your compliant WSS link
           HTTP_LINK=$(grep -oE 'https://[a-zA-Z0-9.-]+\.loca\.lt' localtunnel.log | head -n 1)
           WSS_LINK=$(echo "$HTTP_LINK" | sed 's/https:\/\//wss:\/\//')
 
@@ -86,6 +91,6 @@ jobs:
           echo "$WSS_LINK"
           echo "=================================================="
 
-      # 10. FORCE RUNNER TO STAY ONLINE PERMANENTLY
+      # 9. FORCE RUNNER TO STAY ONLINE PERMANENTLY
       - name: Keep Server Alive Permanent
         run: tail -f /dev/null
