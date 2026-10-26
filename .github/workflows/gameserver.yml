@@ -22,38 +22,51 @@ jobs:
       - name: Install Node.js for LocalTunnel
         uses: actions/setup-node@v4
         with:
-          node-node-version: '20'
+          node-version: '20'
 
       - name: Start Game Server and Setup Secure Tunnel
         run: |
           cd ${{ github.workspace }}
           
-          # 1. Force EULA to true so it doesn't crash on boot
+          # 1. Force EULA to true
           echo "eula=true" > eula.txt
 
-          # 2. Make your launch script executable and boot the server
+          # 2. THE FIX: Force server.properties to bind to all interfaces cleanly
+          if [ -f server.properties ]; then
+            sed -i 's/server-ip=.*/server-ip=0.0.0.0/g' server.properties
+            echo "Forced server-ip to 0.0.0.0 in server.properties"
+          fi
+
+          # 3. THE FIX: Force EaglercraftXServer listeners configuration to accept local loopbacks
+          # This replaces whatever address is inside listeners.yml with '0.0.0.0:25565'
+          if [ -f plugins/EaglercraftXServer/listeners.yml ]; then
+            sed -i 's/address:.*/address: "0.0.0.0:25565"/g' plugins/EaglercraftXServer/listeners.yml
+            echo "Forced Eaglercraft listener binding to 0.0.0.0:25565"
+          fi
+
+          # 4. Make your launch script executable and boot the server
           chmod +x ./run.sh
           ./run.sh &
           
-          # 3. Wait until the server is fully booted on port 25565
+          # 5. Wait until the server is fully booted on port 25565 (Using explicit 127.0.0.1 loopback)
           echo "Waiting for Eaglercraft to bind to port 25565..."
-          until nc -z localhost 25565; do
+          until nc -z 127.0.0.1 25565; do
             printf '.'
             sleep 3
           done
-          echo "Server is successfully running on localhost!"
+          echo "Server is successfully running on 127.0.0.1:25565!"
 
-          # 4. Install localtunnel globally
+          # 6. Install localtunnel globally
           npm install -g localtunnel
 
-          # 5. Start the tunnel on port 25565 and save the link output
-          # LocalTunnel provides a completely valid SSL certificate that web browsers accept
-          lt --port 25565 > localtunnel.log 2>&1 &
+          # 7. THE FIX: Use local host IP '127.0.0.1' instead of the 'localhost' word token
+          # This forces localtunnel to drop the handshake token and grab raw TCP packets
+          lt --local-host 127.0.0.1 --port 25565 > localtunnel.log 2>&1 &
           
           # Give the tunnel a few seconds to connect to the cloud server
           sleep 8
           
-          # 6. Extract the unique secure URL assigned to your runner
+          # 8. Extract the unique secure URL assigned to your runner
           HTTP_LINK=$(grep -oE 'https://[a-zA-Z0-9.-]+\.loca\.lt' localtunnel.log | head -n 1)
           
           # Convert the https:// prefix to a browser-compliant wss:// websocket link
@@ -69,9 +82,9 @@ jobs:
           if [ -z "$WSS_LINK" ]; then
             echo "--- RAW TUNNEL LOG STATUS ---"
             cat localtunnel.log
-            echo "-----------------------------"
+            echo "------------------------------"
           fi
 
-      # 7. FORCE RUNNER TO STAY ONLINE PERMANENTLY
+      # 9. FORCE RUNNER TO STAY ONLINE PERMANENTLY
       - name: Keep Server Alive Permanent
         run: tail -f /dev/null
