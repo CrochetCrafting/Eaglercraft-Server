@@ -19,7 +19,12 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Start Game Server and Inject Tunnel
+      - name: Install Node.js for LocalTunnel
+        uses: actions/setup-node@v4
+        with:
+          node-node-version: '20'
+
+      - name: Start Game Server and Setup Secure Tunnel
         run: |
           cd ${{ github.workspace }}
           
@@ -38,30 +43,35 @@ jobs:
           done
           echo "Server is successfully running on localhost!"
 
-          # 4. Use standard background loops to pull a serveo.net web socket bridge url
-          # This completely bypasses interactive ssh terminal lockouts
-          ssh -R 80:localhost:25565 -o StrictHostKeyChecking=no serveo.net > serveo.log 2>&1 &
-          
-          # Give the background loop 10 seconds to fetch and log the allocated subdomain URL
-          sleep 10
-          
-          # 5. Extract the secure HTTPS link and transform it into an Eagler wss:// link
-          HTTPS_LINK=$(grep -oE 'https://[a-zA-Z0-9.-]+\.serveo\.net' serveo.log | head -n 1)
-          WSS_LINK=$(echo "$HTTPS_LINK" | sed 's/https:\/\//wss:\/\//')
+          # 4. Install localtunnel globally
+          npm install -g localtunnel
 
-          # Backup check: If the log format varies, print the raw output file to manually check it
-          if [ -z "$WSS_LINK" ]; then
-            echo "--- RAW TUNNEL LOG FOR MANUAL BACKUP ---"
-            cat serveo.log
-            echo "----------------------------------------"
-          fi
+          # 5. Start the tunnel on port 25565 and save the link output
+          # LocalTunnel provides a completely valid SSL certificate that web browsers accept
+          lt --port 25565 > localtunnel.log 2>&1 &
+          
+          # Give the tunnel a few seconds to connect to the cloud server
+          sleep 8
+          
+          # 6. Extract the unique secure URL assigned to your runner
+          HTTP_LINK=$(grep -oE 'https://[a-zA-Z0-9.-]+\.loca\.lt' localtunnel.log | head -n 1)
+          
+          # Convert the https:// prefix to a browser-compliant wss:// websocket link
+          WSS_LINK=$(echo "$HTTP_LINK" | sed 's/https:\/\//wss:\/\//')
 
           echo "=================================================="
           echo "YOUR PERMANENT EAGLERCRAFT SERVER IS LIVE!"
           echo "Copy and paste this link into your client browser:"
           echo "$WSS_LINK"
           echo "=================================================="
+          
+          # Fallback: log output verification if it fails to parse
+          if [ -z "$WSS_LINK" ]; then
+            echo "--- RAW TUNNEL LOG STATUS ---"
+            cat localtunnel.log
+            echo "-----------------------------"
+          fi
 
-      # 6. FORCE RUNNER TO STAY ONLINE PERMANENTLY
+      # 7. FORCE RUNNER TO STAY ONLINE PERMANENTLY
       - name: Keep Server Alive Permanent
         run: tail -f /dev/null
