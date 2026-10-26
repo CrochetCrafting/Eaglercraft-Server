@@ -21,15 +21,13 @@ jobs:
 
       - name: Start Game Server and Keep Alive
         run: |
-          # 1. Force execution directly from the absolute workspace root path
           cd ${{ github.workspace }}
           
-          # List the files out in logs to verify exact placement and names
-          echo "Current working directory contents:"
-          ls -la
+          # Make the run script executable just in case
+          chmod +x ./run.sh
           
-          # Launch using the explicit current directory pathing token
-          java -Xmx2G -Xms2G -jar ./EaglerXRewind.jar nogui &
+          # 1. Start the server using your repository's native run script
+          ./run.sh &
           
           # 2. Wait for the server port to open
           echo "Waiting for Eaglercraft server to bind to port..."
