@@ -19,10 +19,8 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Install Node.js for WebSocket Gateway
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
+      - name: Install Nodews Module
+        run: npm install ws
 
       - name: Start Game Server and Setup Proxy
         run: |
@@ -85,24 +83,26 @@ jobs:
           console.log('Eaglercraft 1.12 Binary Protocol Translation Bridge Active on Port 8080');
           EOF
 
-          # Install WebSocket module and run the translation proxy bridge in the background
-          npm install ws
+          # Run the translation proxy bridge in the background
           node stable_eagler_bridge.js &
           sleep 3
 
-          # 7. Use a reliable native web connection tool (wscat) to establish the link
-          npm install -g wscat
-
-          # 8. Download a lightweight, stable, zero-config native binary called hookdeck
-          curl -sL https://github.com | tar xz
+          # 7. Start an SSH tunnel using localhost.run targeting your translation bridge (8080)
+          ssh -R 80:localhost:8080 -o StrictHostKeyChecking=no nokey@localhost.run > tunnel.log 2>&1 &
           
-          # Run hookdeck pointing to our local websocket bridge on port 8080
-          ./hookdeck listen 8080 eagler-server --source github-actions > hookdeck.log 2>&1 &
-          sleep 8
-
-          # 9. Extract the secure HTTPS link and transform it into an Eagler wss:// link
-          HTTP_LINK=$(grep -oE 'https://[a-zA-Z0-9.-]+\.hookdeck\.dev' hookdeck.log | head -n 1)
+          # Give the tunnel a few seconds to perform the handshake
+          sleep 10
+          
+          # 8. Extract the secure tunneled web domain from the logging file
+          HTTP_LINK=$(grep -oE 'https://[a-zA-Z0-9.-]+\.localhost\.run' tunnel.log | head -n 1)
           WSS_LINK=$(echo "$HTTP_LINK" | sed 's/https:\/\//wss:\/\//')
+
+          # Backup check: If parsing fails, dump the raw log so we can manually see it
+          if [ -z "$WSS_LINK" ]; then
+            echo "--- RAW TUNNEL LOG STATUS ---"
+            cat tunnel.log
+            echo "------------------------------"
+          fi
 
           echo "=================================================="
           echo "YOUR PERMANENT EAGLERCRAFT SERVER IS LIVE!"
@@ -110,6 +110,6 @@ jobs:
           echo "$WSS_LINK"
           echo "=================================================="
 
-      # 10. FORCE RUNNER TO STAY ONLINE PERMANENTLY (Moved outside the run block so it cannot skip)
+      # 9. FORCE RUNNER TO STAY ONLINE PERMANENTLY (Completely isolated)
       - name: Keep Server Alive Permanent
         run: tail -f /dev/null
