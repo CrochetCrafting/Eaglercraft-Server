@@ -87,28 +87,22 @@ jobs:
           node stable_eagler_bridge.js &
           sleep 3
 
-          # 7. Start the tunnel and force the workflow to bypass policy checks
-          # By passing an empty SSH execution block, it flags the server to verify your connection path
-          ssh -R 80:localhost:8080 -o StrictHostKeyChecking=no nokey@localhost.run tunnel-id > tunnel.log 2>&1 &
+          # 7. Start a non-interactive serveo tunnel targeting the translation bridge (8080)
+          # -N forces the SSH process to run cleanly without requesting a TTY terminal
+          ssh -N -R 80:localhost:8080 -o StrictHostKeyChecking=no serveo.net > serveo.log 2>&1 &
           
           # Give the tunnel a few seconds to perform the handshake
           sleep 12
           
-          # 8. Extract the unique sub-domain URL assigned to your runner
-          HTTP_LINK=$(grep -oE 'https://[a-zA-Z0-9.-]+\.localhost\.run' tunnel.log | head -n 1)
+          # 8. Extract the unique secure URL assigned to your runner
+          HTTP_LINK=$(grep -oE 'https://[a-zA-Z0-9.-]+\.serveo\.net' serveo.log | head -n 1)
           WSS_LINK=$(echo "$HTTP_LINK" | sed 's/https:\/\//wss:\/\//')
 
-          # Backup check: If parsing fails, dump the raw log so we can see the custom assigned URL
-          if [ -z "$WSS_LINK" ] || [ "$WSS_LINK" = "wss://admin.localhost.run" ]; then
+          # Backup check: If parsing fails, dump the raw log file directly to check the assignment
+          if [ -z "$WSS_LINK" ]; then
             echo "--- RAW LOG ADDRESS ROUTE OVERRIDE ---"
-            cat tunnel.log
+            cat serveo.log
             echo "---------------------------------------"
-            
-            # Direct parse patch to extract alternate address configurations
-            REAL_URL=$(grep -oE '[a-zA-Z0-9.-]+\.localhost\.run' tunnel.log | grep -v 'admin' | head -n 1)
-            if [ ! -z "$REAL_URL" ]; then
-               WSS_LINK="wss://$REAL_URL"
-            fi
           fi
 
           echo "=================================================="
