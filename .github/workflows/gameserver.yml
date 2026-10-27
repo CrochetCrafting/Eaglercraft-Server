@@ -88,28 +88,27 @@ jobs:
           sleep 3
 
           # 7. Start a non-interactive serveo tunnel targeting the translation bridge (8080)
-          # -N forces the SSH process to run cleanly without requesting a TTY terminal
           ssh -N -R 80:localhost:8080 -o StrictHostKeyChecking=no serveo.net > serveo.log 2>&1 &
           
-          # Give the tunnel a few seconds to perform the handshake
-          sleep 12
+          # Give the tunnel plenty of time to establish the remote handshake
+          sleep 15
           
-          # 8. Extract the unique secure URL assigned to your runner
-          HTTP_LINK=$(grep -oE 'https://[a-zA-Z0-9.-]+\.serveo\.net' serveo.log | head -n 1)
-          WSS_LINK=$(echo "$HTTP_LINK" | sed 's/https:\/\//wss:\/\//')
-
-          # Backup check: If parsing fails, dump the raw log file directly to check the assignment
-          if [ -z "$WSS_LINK" ]; then
-            echo "--- RAW LOG ADDRESS ROUTE OVERRIDE ---"
-            cat serveo.log
-            echo "---------------------------------------"
-          fi
+          # 8. THE FIX: Extract the text after "Forwarding HTTP traffic from" in the logs
+          # This grabs the exact unique link assigned to your workflow run
+          REAL_URL=$(grep -oE 'https://[a-zA-Z0-9.-]+\.serveo\.net' serveo.log | head -n 1)
+          
+          # Convert the web link to a browser-compliant WebSocket link
+          WSS_LINK=$(echo "$REAL_URL" | sed 's/https:\/\//wss:\/\//')
 
           echo "=================================================="
           echo "YOUR PERMANENT EAGLERCRAFT SERVER IS LIVE!"
           echo "Copy and paste this link into your client browser:"
           echo "$WSS_LINK"
           echo "=================================================="
+          
+          echo "--- RAW LIVE SERVEO LOG DUMP ---"
+          cat serveo.log
+          echo "--------------------------------"
 
       # 9. FORCE RUNNER TO STAY ONLINE PERMANENTLY
       - name: Keep Server Alive Permanent
