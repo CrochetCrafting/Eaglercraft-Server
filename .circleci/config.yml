@@ -1,0 +1,33 @@
+version: 2.1
+
+jobs:
+  run-tunnel:
+    docker:
+      - image: cimg/base:stable # A clean Ubuntu-based lightweight runner
+    steps:
+      - checkout
+
+      # 1. CircleCI launches your script in the background cleanly
+      - run:
+          name: Start local server via run.sh
+          command: bash run.sh
+          background: true
+
+      # 2. Give the server time to fully boot up
+      - run:
+          name: Wait for server to bind to port
+          command: sleep 5
+
+      # 3. Test that CircleCI can actually reach your server locally
+      - run:
+          name: Verify server is listening
+          command: |
+            echo "Checking open ports..."
+            sudo ss -tulpn | grep LISTEN || true
+            echo "Testing local connectivity..."
+            curl -I http://127.0.0.1:3000 || true # Update 3000 to your port if different
+
+      # 4. Start your permanent tunnel (Example using Pinggy over native SSH)
+      - run:
+          name: Establish Public Permanent Tunnel
+          command: ssh -p 443 -R0:127.0.0.1:3000 -o StrictHostKeyChecking=no a.pinggy.io
