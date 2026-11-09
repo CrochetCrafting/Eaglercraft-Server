@@ -1,115 +1,36 @@
-name: Eaglercraft Permanent Server
-
-on:
-  push:
-    branches: [ "main" ]
-  workflow_dispatch:
+name: Start Game Server Tunnel
+on: [push, workflow_dispatch]
 
 jobs:
-  run-server:
+  game-host:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v5
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-
-      - name: Install Nodews Module
-        run: npm install ws
-
-      - name: Start Game Server and Setup Proxy
+      # 1. Start your game server script detached in the background
+      - name: Start Game Server
         run: |
-          cd ${{ github.workspace }}
-          
-          # 1. Force EULA to true
-          echo "eula=true" > eula.txt
+          chmod +x run.sh
+          nohup ./run.sh > server.log 2>&1 &
+          echo "Game server process launched."
 
-          # 2. Force server.properties configuration to offline mode
-          if [ -f server.properties ]; then
-            sed -i 's/server-ip=.*/server-ip=0.0.0.0/g' server.properties
-            sed -i 's/online-mode=.*/online-mode=false/g' server.properties
-          fi
+      # 2. Wait 15 seconds (game servers take a bit longer to boot up)
+      - name: Boot Delay
+        run: sleep 15
 
-          # 3. Temporarily remove AuthMe so it doesn't reject handshakes
-          if [ -d plugins ]; then
-            rm -f plugins/AuthMe*.jar
-            rm -f plugins/authme*.jar
-          fi
+      # 3. Check if your game port is active (look for UDP or TCP bindings)
+      - name: Check Active Game Ports
+        run: |
+          echo "=== Network Interfaces ==="
+          sudo ss -tulpn || true
+          echo "=== Server Startup Logs ==="
+          cat server.log || true
 
-          # 4. Make your launch script executable and boot the server
-          chmod +x ./run.sh
-          ./run.sh &
-          
-          # 5. Wait until the server is fully booted on port 25565
-          echo "Waiting for Paper server to bind to port 25565..."
-          until nc -z 127.0.0.1 25565; do
-            printf '.'
-            sleep 3
-          done
-          echo "Base server is successfully running!"
-
-          # 6. Build the binary-unwrapping WebSocket translation protocol engine
-          cat << 'EOF' > stable_eagler_bridge.js
-          const WebSocket = require('ws');
-          const net = require('net');
-          const wss = new WebSocket.Server({ port: 8080 });
-
-          wss.on('connection', (ws) => {
-              const mcSocket = net.createConnection({ port: 25565, host: '127.0.0.1' });
-
-              ws.on('message', (data) => {
-                  if (mcSocket.writable) {
-                      const buffer = Buffer.isBuffer(data) ? data : Buffer.from(data);
-                      mcSocket.write(buffer);
-                  }
-              });
-
-              mcSocket.on('data', (data) => {
-                  if (ws.readyState === WebSocket.OPEN) {
-                      ws.send(data, { binary: true });
-                  }
-              });
-
-              ws.on('close', () => mcSocket.end());
-              mcSocket.on('end', () => ws.close());
-              ws.on('error', () => {});
-              mcSocket.on('error', () => {});
-          });
-          console.log('Eaglercraft 1.12 Binary Protocol Translation Bridge Active on Port 8080');
-          EOF
-
-          # Run the translation proxy bridge in the background
-          node stable_eagler_bridge.js &
-          sleep 3
-
-          # 7. Start a non-interactive serveo tunnel targeting the translation bridge (8080)
-          ssh -N -R 80:localhost:8080 -o StrictHostKeyChecking=no serveo.net > serveo.log 2>&1 &
-          
-          # Give the tunnel plenty of time to establish the remote handshake
-          sleep 15
-          
-          # 8. THE FIX: Extract the text after "Forwarding HTTP traffic from" in the logs
-          # This grabs the exact unique link assigned to your workflow run
-          REAL_URL=$(grep -oE 'https://[a-zA-Z0-9.-]+\.serveo\.net' serveo.log | head -n 1)
-          
-          # Convert the web link to a browser-compliant WebSocket link
-          WSS_LINK=$(echo "$REAL_URL" | sed 's/https:\/\//wss:\/\//')
-
-          echo "=================================================="
-          echo "YOUR PERMANENT EAGLERCRAFT SERVER IS LIVE!"
-          echo "Copy and paste this link into your client browser:"
-          echo "$WSS_LINK"
-          echo "=================================================="
-          
-          echo "--- RAW LIVE SERVEO LOG DUMP ---"
-          cat serveo.log
-          echo "--------------------------------"
-
-      # 9. FORCE RUNNER TO STAY ONLINE PERMANENTLY
-      - name: Keep Server Alive Permanent
-        run: tail -f /dev/null
+      # 4. Use Bore to tunnel your game port (No signup, handles UDP/TCP)
+      - name: Open Game Server Tunnel
+        run: |
+          wget https://github.com
+          tar -xf bore-v0.5.1-x86_64-unknown-linux-musl.tar.gz
+          echo "=== YOUR PUBLIC GAME ADDRESS WILL APPEAR BELOW ==="
+          ./bore local 25565 --to bore.pub # CHANGE 25565 to your game's actual port
